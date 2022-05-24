@@ -14,23 +14,23 @@ const UserSchema = new mongoose.Schema({
     },
     
     country:{
-        type:Number,
+        type:String,
         required: true
     },
     state:{
-        type:Number,
+        type:String,
         required: true
     },
     city:{
-        type:Number,
+        type:String,
         required: true
     },
     address:{
-        type:Number,
+        type:String,
         required: true
     },
     zip:{
-        type:Number,
+        type:String,
         required: true
     },
     image: {

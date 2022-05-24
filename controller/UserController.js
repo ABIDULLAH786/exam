@@ -1,9 +1,49 @@
 const UserSchema = require("../models/UserModel")
 
-exports.Registration = (req,res)=>{
+exports.displayRegPage = (req, res) => {
     res.render("form")
 }
+exports.addNewUser = async (req, res) => {
+    console.log("Img Name: ", req.files.img)
+    console.log("red.body: ", req.body)
+    if (req.body && req.files.img) {
+        const { name, email, phone, country, state, city, address, zip } = req.body;
+        const file = req.files.img;
 
+        const result = await UserSchema.create({
+            name: name,
+            email: email,
+            phone: phone,
+            country: country,
+            state: state,
+            city: city,
+            address: address,
+            zip: zip,
+            image: file.name
+        });
+
+        file.mv(`./public/img/` + file.name, async (e) => {
+            if (e)
+                console.log("error in image uploding")
+            else
+                console.log("Image uploaded")
+        })
+        res.redirect("/users");
+    } else {
+        console.log("Data is not complete")
+        res.redirect("/");
+
+    }
+
+}
+exports.userTable = async (req, res) => {
+   
+    const data = await UserSchema.find()
+
+    res.render("userTable", { data })
+
+
+}
 // exports.signInPage = (req, res) => {
 //     let method = req.params.method;
 //     if (method == "login" || method == "signin") {
@@ -14,8 +54,8 @@ exports.Registration = (req,res)=>{
 //     res.render("auth", { method })
 // }
 // exports.getAllUsers = async (req, res) => {
-//     const data = await UserSchema.find();
-//     res.render("home", { data: data })
+    // const data = await UserSchema.find();
+    // res.render("home", { data: data })
 //     // console.log(data)
 //     // res.sendFile(__dirname + '/views/form.html')
 // }
@@ -50,7 +90,7 @@ exports.Registration = (req,res)=>{
 //         //the trim() is used to remove extra spaces from both ends fo string, so we can easily search data next time
 //         await UserSchema.updateOne({ _id: id }, { $set: { name: name.trim(), email: email.trim(), image: img.name } });
 
-//         //move image to public/img directory 
+//         //move image to public/img directory
 //         img.mv("./public/img/" + img.name, async (e) => {
 //             if (e)
 //                 console.log("Image not updated")
